@@ -156,6 +156,22 @@ def test_authentication_token_is_issued_for_valid_role() -> None:
     assert body["token"].startswith("token-")
 
 
+def test_patient_login_returns_the_expected_demo_token() -> None:
+    response = client.post(
+        "/auth/login",
+        json={"role": "patient", "user_id": "demo-patient"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["token"] == "token-demo-patient"
+
+
+def test_cors_headers_are_present_for_browser_requests() -> None:
+    response = client.get("/health", headers={"Origin": "http://127.0.0.1:3000"})
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://127.0.0.1:3000"
+
+
 def test_authorized_endpoint_accepts_valid_token() -> None:
     response = client.get(
         "/auth/me",

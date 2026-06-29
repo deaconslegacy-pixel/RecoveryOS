@@ -1,5 +1,6 @@
 import fastapi
 import pydantic
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
@@ -21,6 +22,13 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:3000", "http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class DailyCheckIn(pydantic.BaseModel):
@@ -281,7 +289,10 @@ def login(data: LoginRequest) -> dict[str, str]:
         raise fastapi.HTTPException(status_code=403, detail="Unsupported role")
     user_record = {"user_id": data.user_id, "role": data.role}
     storage.save_user(user_record)
-    return {"token": f"token-{data.user_id}", "role": data.role}
+    token = f"token-{data.user_id}"
+    if data.role == "patient" and data.user_id == "demo-patient":
+        token = "token-demo-patient"
+    return {"token": token, "role": data.role}
 
 
 @app.get("/auth/me")

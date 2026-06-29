@@ -1,0 +1,177 @@
+[
+  {
+    "kind": "checkin",
+    "patient_id": "demo-patient",
+    "mood": 4,
+    "sleep_hours": 7.5,
+    "cravings": 1,
+    "status": "recorded"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "I stayed calm today.",
+    "status": "recorded"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "Today I stayed grounded and reached out for support.",
+    "status": "recorded"
+  },
+  {
+    "kind": "checkin",
+    "patient_id": "demo-patient",
+    "mood": 4,
+    "sleep_hours": 7.5,
+    "cravings": 1,
+    "status": "recorded"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "I stayed calm today.",
+    "status": "recorded"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "Today I stayed grounded and reached out for support.",
+    "status": "recorded"
+  },
+  {
+    "kind": "checkin",
+    "patient_id": "demo-patient",
+    "mood": 4,
+    "sleep_hours": 7.5,
+    "cravings": 1,
+    "status": "recorded"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "I stayed calm today.",
+    "status": "recorded"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "Today I stayed grounded and reached out for support.",
+    "status": "recorded"
+  },
+  {
+    "kind": "checkin",
+    "patient_id": "demo-patient",
+    "mood": 4,
+    "sleep_hours": 7.5,
+    "cravings": 1,
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:45:27.799777+00:00"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "I stayed calm today.",
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:45:27.801283+00:00"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "Today I stayed grounded and reached out for support.",
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:45:27.830328+00:00"
+  },
+  {
+    "kind": "checkin",
+    "patient_id": "demo-patient",
+    "mood": 4,
+    "sleep_hours": 7.5,
+    "cravings": 1,
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:45:41.833272+00:00"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "I stayed calm today.",
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:45:41.834751+00:00"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "Today I stayed grounded and reached out for support.",
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:45:41.853229+00:00"
+  },
+  {
+    "kind": "checkin",
+    "patient_id": "demo-patient",
+    "mood": 4,
+    "sleep_hours": 7.5,
+    "cravings": 1,
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:46:30.125909+00:00"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "I stayed calm today.",
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:46:30.127495+00:00"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "Today I stayed grounded and reached out for support.",
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:46:30.158087+00:00"
+  },
+  {
+    "kind": "checkin",
+    "patient_id": "demo-patient",
+    "mood": 4,
+    "sleep_hours": 7.5,
+    "cravings": 1,
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:46:43.458418+00:00"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "I stayed calm today.",
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:46:43.459941+00:00"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "Today I stayed grounded and reached out for support.",
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:46:43.479042+00:00"
+  },
+  {
+    "kind": "checkin",
+    "patient_id": "demo-patient",
+    "mood": 4,
+    "sleep_hours": 7.5,
+    "cravings": 1,
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:47:35.367469+00:00"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "I stayed calm today.",
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:47:35.369088+00:00"
+  },
+  {
+    "kind": "journal",
+    "patient_id": "demo-patient",
+    "entry": "Today I stayed grounded and reached out for support.",
+    "status": "recorded",
+    "timestamp": "2026-06-29T01:47:35.388657+00:00"
+  }
+]

@@ -1,0 +1,142 @@
+[
+  {
+    "patient_id": "demo-patient",
+    "reason": "requested_by_patient",
+    "status": "queued",
+    "deleted_records": 0,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "retention_expired",
+    "status": "completed",
+    "deleted_records": 4,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "requested_by_patient",
+    "status": "queued",
+    "deleted_records": 0,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "retention_expired",
+    "status": "completed",
+    "deleted_records": 2,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "requested_by_patient",
+    "status": "queued",
+    "deleted_records": 0,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "retention_expired",
+    "status": "completed",
+    "deleted_records": 2,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "requested_by_patient",
+    "status": "queued",
+    "deleted_records": 0,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "retention_expired",
+    "status": "completed",
+    "deleted_records": 2,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "requested_by_patient",
+    "status": "queued",
+    "deleted_records": 0,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "retention_expired",
+    "status": "completed",
+    "deleted_records": 2,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "requested_by_patient",
+    "status": "queued",
+    "deleted_records": 0,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "retention_expired",
+    "status": "completed",
+    "deleted_records": 2,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "requested_by_patient",
+    "status": "queued",
+    "deleted_records": 0,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "retention_expired",
+    "status": "completed",
+    "deleted_records": 2,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "requested_by_patient",
+    "status": "queued",
+    "deleted_records": 0,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "retention_expired",
+    "status": "completed",
+    "deleted_records": 2,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "requested_by_patient",
+    "status": "queued",
+    "deleted_records": 0,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "retention_expired",
+    "status": "completed",
+    "deleted_records": 2,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "requested_by_patient",
+    "status": "queued",
+    "deleted_records": 0,
+    "next_step": "Verify identity and process secure deletion"
+  },
+  {
+    "patient_id": "demo-patient",
+    "reason": "retention_expired",
+    "status": "completed",
+    "deleted_records": 2,
+    "next_step": "Verify identity and process secure deletion"
+  }
+]
