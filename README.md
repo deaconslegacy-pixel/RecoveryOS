@@ -125,6 +125,22 @@ docker build -t recoveryos .
 docker run -p 8000:8000 recoveryos
 ```
 
+### Website integration
+
+If you are integrating RecoveryOS with an existing website such as `deaconslegacy.site`, use the following pattern:
+
+- On your backend service, set `ALLOWED_ORIGINS` to the website domain:
+  - `ALLOWED_ORIGINS=https://deaconslegacy.site`
+- If the frontend is served from the same backend origin, leave `VITE_API_BASE_URL` blank when building production.
+- For local frontend development, create `frontend/.env` with:
+  ```env
+  VITE_API_BASE_URL=http://127.0.0.1:8000
+  ```
+- For a separate frontend host, set `VITE_API_BASE_URL` to your backend URL, for example:
+  `VITE_API_BASE_URL=https://api.deaconslegacy.site`
+
+The frontend now uses this env var and will call `/auth/login` relative to the configured backend origin.
+
 ### Platform options
 
 The service is also ready for deployment to Render, Fly.io, Railway, Azure App Service, or similar platforms using the provided Procfile and Dockerfile.

@@ -61,3 +61,43 @@ jobs:
           file: Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
+
+  deploy-to-cloud-run:
+    needs: build-test-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker --quiet ${REGION}-docker.pkg.dev
+        env:
+          REGION: ${{ secrets.GCP_REGION }}
+
+      - name: Build and push to Artifact Registry
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/recoveryos/recoveryos:${{ github.sha }}
+
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT }}
+          service: ${{ secrets.CLOUD_RUN_SERVICE }}
+          image: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/recoveryos/recoveryos:${{ github.sha }}
+          region: ${{ secrets.GCP_REGION }}
+          env_vars: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            ALLOWED_ORIGINS=${{ secrets.ALLOWED_ORIGINS }}

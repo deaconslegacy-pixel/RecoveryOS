@@ -1,6 +1,7 @@
 import fastapi
 import pydantic
 from fastapi.middleware.cors import CORSMiddleware
+import os
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 from fastapi.staticfiles import StaticFiles
@@ -29,9 +30,16 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 
 app.add_middleware(SecurityHeadersMiddleware)
+# Configure CORS origins via env var `ALLOWED_ORIGINS` (comma-separated). Defaults to localhost dev ports.
+allowed_origins = os.getenv("ALLOWED_ORIGINS")
+if allowed_origins:
+    origins = [o.strip() for o in allowed_origins.split(",") if o.strip()]
+else:
+    origins = ["http://127.0.0.1:3000", "http://localhost:3000"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:3000", "http://localhost:3000"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

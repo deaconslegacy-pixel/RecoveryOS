@@ -30,9 +30,10 @@ RUN addgroup --system app \
 # Run as non-root user
 USER app
 
-EXPOSE 8000
+ENV PORT=8080
+EXPOSE 8080
 
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-w", "4", "app.main:app", "--bind", "0.0.0.0:8000"]
+CMD ["sh", "-c", "gunicorn -k uvicorn.workers.UvicornWorker -w 4 app.main:app --bind 0.0.0.0:${PORT:-8080}"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-	CMD python -c "import urllib.request,sys; code=urllib.request.urlopen('http://127.0.0.1:8000/health').getcode(); sys.exit(0 if code==200 else 1)" || exit 1
+	CMD python -c "import urllib.request,sys; code=urllib.request.urlopen('http://127.0.0.1:${PORT:-8080}/health').getcode(); sys.exit(0 if code==200 else 1)" || exit 1
