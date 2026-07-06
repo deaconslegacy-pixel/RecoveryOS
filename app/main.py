@@ -3,10 +3,17 @@ import pydantic
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 from app import storage
 
 app = fastapi.FastAPI(title="RecoveryOS", version="0.1.0")
+
+# If a built frontend exists (copied into the image at build-time), serve it at root.
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend_dist"
+if FRONTEND_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
