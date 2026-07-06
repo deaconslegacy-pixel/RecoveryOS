@@ -132,3 +132,55 @@ The service is also ready for deployment to Render, Fly.io, Railway, Azure App S
 ## Notes
 
 This repository is an early-stage technical foundation. It is not a substitute for legal advice, compliance review, or a completed production-ready platform.
+
+## Implementation status & quick reference
+
+- Backend server: `app/main.py` (FastAPI). Runs on Gunicorn + Uvicorn worker in production.
+- Storage: `app/storage.py` now uses SQLAlchemy and reads `DATABASE_URL` for production; falls back to local SQLite at `data/recoveryos.db`.
+- Frontend: `frontend/` (Vite + React). Docker multi-stage build compiles frontend and copies the `dist` into the image at `/app/frontend_dist`.
+- Docker: multi-stage build, non-root `app` user, `HEALTHCHECK` configured. See `Dockerfile`.
+- CI: `.github/workflows/ci.yml` runs tests, builds the frontend, and pushes the Docker image to GitHub Container Registry (`ghcr.io`).
+
+## How to build & run locally (recommended)
+
+1. Build the Docker image (recommended for parity with production):
+
+```bash
+docker build -t recoveryos:local .
+docker run --rm -p 8000:8000 recoveryos:local
+```
+
+2. Or run backend + frontend separately for development:
+
+Backend:
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+Frontend (dev):
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+API endpoints remain under `/` (e.g. `/health`, `/auth/login`, `/patient/timeline`). When the Docker image contains a built frontend, the static app is served at `/`.
+
+## CI / Registry notes
+
+- The workflow uses the repository `GITHUB_TOKEN` to publish the image to GHCR as `ghcr.io/<owner>/<repo>:latest` on pushes to `main`.
+- To pull the image from other contexts, you may need to grant package read permissions or create a PAT for external access.
+
+## Next steps (I can help with any of these)
+
+- Scaffold Alembic migrations and add an initial migration.
+- Add a deploy step to the GitHub Actions workflow for Cloud Run, ECS (ECR), or Render.
+- Add authentication (OAuth / OIDC) or integrate with an identity provider.
+- Draft a simple pricing/onboarding README and GitHub Release notes for `v0.1.0`.
+
+---
+
+If you'd like, tell me which deployment target you prefer and I will scaffold the deploy steps in CI and produce any required environment/configuration templates.
