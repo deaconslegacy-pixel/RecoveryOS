@@ -139,14 +139,16 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
         run: |
+          DATABASE_URL_CLEAN="$(printf '%s' "$DATABASE_URL" | tr -d '\r\n' | xargs)"
+          ALLOWED_ORIGINS_CLEAN="$(printf '%s' "$ALLOWED_ORIGINS" | tr -d '\r\n' | xargs)"
           {
             echo "env_vars<<EOF"
             echo "RECOVERYOS_BUILD_ID=${GITHUB_SHA}"
-            if [ -n "$DATABASE_URL" ]; then
-              echo "DATABASE_URL=$DATABASE_URL"
+            if [ -n "$DATABASE_URL_CLEAN" ]; then
+              echo "DATABASE_URL=$DATABASE_URL_CLEAN"
             fi
-            if [ -n "$ALLOWED_ORIGINS" ]; then
-              echo "ALLOWED_ORIGINS=$ALLOWED_ORIGINS"
+            if [ -n "$ALLOWED_ORIGINS_CLEAN" ]; then
+              echo "ALLOWED_ORIGINS=$ALLOWED_ORIGINS_CLEAN"
             fi
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
