@@ -259,7 +259,7 @@ def homepage() -> fastapi.responses.Response:
 
 @app.get("/app", include_in_schema=False)
 def app_entry_redirect() -> fastapi.responses.RedirectResponse:
-    return fastapi.responses.RedirectResponse(url=f"/app/?v={SHORT_BUILD_ID}", status_code=307)
+    return fastapi.responses.RedirectResponse(url="/app/", status_code=307)
 
 
 @app.get("/login", include_in_schema=False)
@@ -321,7 +321,7 @@ def signup_page() -> fastapi.responses.HTMLResponse:
         <head>
             <meta charset=\"utf-8\">
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-            <title>Create your RecoveryOS by Deacons Legacy account</title>
+            <title>Create your RecoveryOS account</title>
             <style>
                 :root { color-scheme: dark; }
                 body { font-family: Inter, Arial, sans-serif; margin: 0; min-height: 100vh; background: radial-gradient(circle at top left, rgba(79,209,197,0.22), transparent 24%), linear-gradient(135deg, #040816, #0f172a 50%, #18253c); color: #f8fafc; }
@@ -338,7 +338,7 @@ def signup_page() -> fastapi.responses.HTMLResponse:
         <body>
             <main>
                 <p class="eyebrow">RecoveryOS by Deacons Legacy</p>
-                <h1>Create your RecoveryOS by Deacons Legacy account</h1>
+                <h1>Create your RecoveryOS account</h1>
                 <p class="brand">Launch faster with guided onboarding, role-based access, and compliance-ready controls.</p>
                 <form action=\"/auth/signup\" method=\"post\">
                     <label>Role
