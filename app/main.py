@@ -111,7 +111,7 @@ def ui_shell() -> fastapi.responses.HTMLResponse:
         <head>
             <meta charset=\"utf-8\">
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-            <title>RecoveryOS</title>
+            <title>RecoveryOS by Deacons Legacy</title>
             <style>
                 body { font-family: Inter, Arial, sans-serif; margin: 0; background: #0f172a; color: #f8fafc; }
                 main { max-width: 960px; margin: 0 auto; padding: 3rem 1.5rem; }
@@ -122,15 +122,16 @@ def ui_shell() -> fastapi.responses.HTMLResponse:
         </head>
         <body>
             <main>
-                <h1>RecoveryOS</h1>
+                <p class=\"pill\">RecoveryOS by Deacons Legacy</p>
+                <h1>RecoveryOS Platform Overview</h1>
                 <p>Privacy-first recovery coordination for patients, counselors, families, and facilities.</p>
                 <div class="card">
-                    <h2>Product Overview</h2>
+                    <h2>RecoveryOS by Deacons Legacy Product Overview</h2>
                     <p><span class="pill">Patient</span><span class="pill">Counselor</span><span class="pill">Family</span><span class="pill">Facility</span></p>
                     <p>The backend now exposes care timelines, consent handling, audits, retention workflows, and role-aware dashboards.</p>
                 </div>
                 <div class="card">
-                    <h2>Next milestones</h2>
+                    <h2>Next milestones for RecoveryOS by Deacons Legacy</h2>
                     <ul>
                         <li>Real authentication and database integration</li>
                         <li>Frontend dashboard views and patient experience flows</li>
@@ -145,7 +146,10 @@ def ui_shell() -> fastapi.responses.HTMLResponse:
 
 
 @app.get("/", include_in_schema=False)
-def homepage() -> fastapi.responses.HTMLResponse:
+def homepage() -> fastapi.responses.Response:
+    if FRONTEND_DIR.exists():
+        return fastapi.responses.RedirectResponse(url="/app/", status_code=307)
+
     return fastapi.responses.HTMLResponse(
         content="""
         <!doctype html>
@@ -153,7 +157,7 @@ def homepage() -> fastapi.responses.HTMLResponse:
         <head>
             <meta charset=\"utf-8\">
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-            <title>RecoveryOS | Privacy-first recovery operating system</title>
+            <title>RecoveryOS by Deacons Legacy | Privacy-first recovery operating system</title>
             <style>
                 :root { color-scheme: dark; }
                 body { font-family: Inter, Arial, sans-serif; margin: 0; background: radial-gradient(circle at top left, rgba(79,209,197,0.22), transparent 20%), linear-gradient(135deg, #040816, #0f172a 50%, #18253c); color: #f8fafc; }
@@ -173,8 +177,8 @@ def homepage() -> fastapi.responses.HTMLResponse:
         <body>
             <main>
                 <section class=\"hero\">
-                    <p class="eyebrow">RecoveryOS</p>
-                    <h1>Modern recovery coordination for patients, care teams, and families.</h1>
+                    <p class="eyebrow">RecoveryOS by Deacons Legacy</p>
+                    <h1>RecoveryOS by Deacons Legacy for modern recovery coordination.</h1>
                     <p>Bring daily support, compliance-ready care workflows, and role-based collaboration into a single calm, secure operating system.</p>
                     <p><span class="pill">HIPAA-ready controls</span><span class="pill">Medicaid/insurance-aligned workflows</span><span class="pill">Role-based access</span></p>
                     <a class="button" href="/app/">Explore the platform</a>
@@ -244,7 +248,7 @@ def login_page() -> fastapi.responses.HTMLResponse:
         <head>
             <meta charset=\"utf-8\">
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-            <title>Log in to RecoveryOS</title>
+            <title>Log in to RecoveryOS by Deacons Legacy</title>
             <style>
                 :root { color-scheme: dark; }
                 body { font-family: Inter, Arial, sans-serif; margin: 0; min-height: 100vh; background: radial-gradient(circle at top left, rgba(79,209,197,0.22), transparent 24%), linear-gradient(135deg, #040816, #0f172a 50%, #18253c); color: #f8fafc; }
@@ -261,7 +265,7 @@ def login_page() -> fastapi.responses.HTMLResponse:
         <body>
             <main>
                 <p class="eyebrow">RecoveryOS by Deacons Legacy</p>
-                <h1>Log in to RecoveryOS</h1>
+                <h1>Log in to RecoveryOS by Deacons Legacy</h1>
                 <p class="brand">Secure access for patients, counselors, families, and facilities.</p>
                 <form action=\"/auth/login\" method=\"post\">
                     <label>Role
@@ -294,7 +298,7 @@ def signup_page() -> fastapi.responses.HTMLResponse:
         <head>
             <meta charset=\"utf-8\">
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-            <title>Create your RecoveryOS account</title>
+            <title>Create your RecoveryOS by Deacons Legacy account</title>
             <style>
                 :root { color-scheme: dark; }
                 body { font-family: Inter, Arial, sans-serif; margin: 0; min-height: 100vh; background: radial-gradient(circle at top left, rgba(79,209,197,0.22), transparent 24%), linear-gradient(135deg, #040816, #0f172a 50%, #18253c); color: #f8fafc; }
@@ -311,7 +315,7 @@ def signup_page() -> fastapi.responses.HTMLResponse:
         <body>
             <main>
                 <p class="eyebrow">RecoveryOS by Deacons Legacy</p>
-                <h1>Create your RecoveryOS account</h1>
+                <h1>Create your RecoveryOS by Deacons Legacy account</h1>
                 <p class="brand">Launch faster with guided onboarding, role-based access, and compliance-ready controls.</p>
                 <form action=\"/auth/signup\" method=\"post\">
                     <label>Role
@@ -347,7 +351,7 @@ def compliance_page() -> fastapi.responses.HTMLResponse:
         <head>
             <meta charset=\"utf-8\">
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-            <title>RecoveryOS Compliance</title>
+            <title>RecoveryOS by Deacons Legacy Compliance</title>
             <style>
                 :root { color-scheme: dark; }
                 body { font-family: Inter, Arial, sans-serif; margin: 0; min-height: 100vh; background: radial-gradient(circle at top left, rgba(79,209,197,0.22), transparent 24%), linear-gradient(135deg, #040816, #0f172a 50%, #18253c); color: #f8fafc; }

@@ -53,6 +53,25 @@ The frontend now reflects the product identity as **RecoveryOS by Deacons Legacy
 - A phoenix-inspired visual motif is applied across hero and navigation elements.
 - Dashboard headers across patient, counselor, family, and facility views now use the full brand byline.
 
+## Pricing and Licensing Model
+
+RecoveryOS by Deacons Legacy is positioned with two commercial options so organizations can choose operating flexibility or long-term ownership.
+
+### Subscription plan
+
+- Indicative pricing: $49 per user per month
+- Best fit: teams that want fast rollout, predictable monthly cost, and evergreen updates
+- Includes: active support, ongoing feature releases, and standard security updates while subscribed
+
+### Enterprise lifetime license
+
+- Indicative pricing: starts at $125,000 one-time
+- Best fit: enterprise providers and multi-facility organizations with long-term platform ownership goals
+- Includes: perpetual usage rights under enterprise agreement terms
+- Optional add-on: annual maintenance and premium support for continued upgrades and service coverage
+
+Final commercial terms should be set through a formal quote based on seats, deployment model, integration scope, and compliance requirements.
+
 ## Security and Privacy Principles
 
 RecoveryOS is being built with a strict privacy-first posture. The following principles guide the architecture:

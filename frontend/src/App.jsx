@@ -5,6 +5,7 @@ import FacilityDashboard from './pages/FacilityDashboard';
 import FamilyDashboard from './pages/FamilyDashboard';
 import Home from './pages/Home';
 import PatientDashboard from './pages/PatientDashboard';
+import Pricing from './pages/Pricing';
 
 const ROLE_OPTIONS = [
   { value: 'patient', label: 'Patient' },
@@ -62,6 +63,7 @@ export default function App() {
         </div>
         <div className="nav-actions">
           <button onClick={() => setView('home')}>Home</button>
+          <button onClick={() => setView('pricing')}>Pricing</button>
           <button onClick={() => setView('patient')}>Patient</button>
           <button onClick={() => setView('counselor')}>Counselor</button>
           <button onClick={() => setView('family')}>Family</button>
@@ -93,6 +95,7 @@ export default function App() {
       </div>
 
       {view === 'home' ? <Home onNavigate={setView} /> : null}
+      {view === 'pricing' ? <Pricing /> : null}
       {view === 'patient' ? <PatientDashboard session={session} /> : null}
       {view === 'counselor' ? <CounselorDashboard session={session} /> : null}
       {view === 'family' ? <FamilyDashboard session={session} /> : null}
