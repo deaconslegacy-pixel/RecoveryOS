@@ -1,4 +1,4 @@
-FROM node:20-bullseye AS frontend-builder
+FROM node:22-bullseye AS frontend-builder
 WORKDIR /build
 COPY frontend/package.json frontend/package-lock.json* ./
 COPY frontend/ ./frontend/
