@@ -1,22 +1,30 @@
 const apps = [
-  { name: 'Patient', description: 'Daily check-ins, journal reflections, and care timeline' },
-  { name: 'Counselor', description: 'Caseload insights, alerts, and treatment planning' },
-  { name: 'Family', description: 'Support resources and safe communication tools' },
-  { name: 'Facility', description: 'Analytics, compliance, and staff guidance' },
+  { name: 'Patient', description: 'Daily check-ins, guided reflections, and a clear recovery timeline in one place.' },
+  { name: 'Counselor', description: 'Caseload visibility, treatment planning support, and risk-aware coordination tools.' },
+  { name: 'Family', description: 'Permission-based updates and compassionate support resources for loved ones.' },
+  { name: 'Facility', description: 'Operational insights, compliance-ready reporting, and coordinated care oversight.' },
 ];
 
 export default function Home({ onNavigate }) {
   return (
     <section className="page-stack">
-      <div className="hero">
-        <p className="eyebrow">RecoveryOS</p>
-        <h1>Privacy-first recovery coordination for modern care teams.</h1>
-        <p className="hero-copy">
-          A secure operating system for recovery that brings planning, support workflows, and compliance readiness into one place.
-        </p>
-        <div className="button-row">
-          <button onClick={() => onNavigate('patient')}>Open patient view</button>
-          <button onClick={() => onNavigate('counselor')}>Open counselor view</button>
+      <div className="hero hero-split">
+        <div className="hero-copy-block">
+          <p className="eyebrow">RecoveryOS by Deacons Legacy</p>
+          <h1>Modern recovery coordination for patients, care teams, and families.</h1>
+          <p className="hero-copy">
+            Bring daily support, compliance-ready care workflows, and role-based collaboration into a single calm, secure operating system.
+          </p>
+          <div className="button-row">
+            <button onClick={() => onNavigate('patient')}>Explore patient experience</button>
+            <button onClick={() => onNavigate('counselor')}>See counselor workflow</button>
+          </div>
+        </div>
+        <div className="phoenix-card" aria-label="Phoenix rising as a recovery symbol">
+          <div className="phoenix-glow" />
+          <div className="phoenix-crest">
+            <span>✦</span>
+          </div>
         </div>
       </div>
 

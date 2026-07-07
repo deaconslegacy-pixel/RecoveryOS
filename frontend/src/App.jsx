@@ -49,14 +49,27 @@ export default function App() {
   return (
     <div className="app-shell">
       <nav className="top-nav">
-        <button onClick={() => setView('home')}>RecoveryOS</button>
-        <button onClick={() => setView('patient')}>Patient</button>
-        <button onClick={() => setView('counselor')}>Counselor</button>
-        <button onClick={() => setView('family')}>Family</button>
-        <button onClick={() => setView('facility')}>Facility</button>
+        <div className="top-nav-brand">
+          <div className="brand-mark">✦</div>
+          <div className="brand-title">
+            <strong>RecoveryOS</strong>
+            <span>Deacons Legacy</span>
+          </div>
+        </div>
+        <div className="nav-actions">
+          <button onClick={() => setView('home')}>Home</button>
+          <button onClick={() => setView('patient')}>Patient</button>
+          <button onClick={() => setView('counselor')}>Counselor</button>
+          <button onClick={() => setView('family')}>Family</button>
+          <button onClick={() => setView('facility')}>Facility</button>
+        </div>
       </nav>
 
       <div className="auth-card">
+        <div className="auth-card-header">
+          <p className="eyebrow">Secure care coordination</p>
+          <h2>Choose the workspace that fits your role.</h2>
+        </div>
         <form onSubmit={handleLogin} className="login-form">
           <label>
             Role

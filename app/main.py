@@ -155,26 +155,31 @@ def homepage() -> fastapi.responses.HTMLResponse:
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
             <title>RecoveryOS | Privacy-first recovery operating system</title>
             <style>
-                body { font-family: Inter, Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #0f172a, #111827); color: #f8fafc; }
+                :root { color-scheme: dark; }
+                body { font-family: Inter, Arial, sans-serif; margin: 0; background: radial-gradient(circle at top left, rgba(79,209,197,0.22), transparent 20%), linear-gradient(135deg, #040816, #0f172a 50%, #18253c); color: #f8fafc; }
                 main { max-width: 1120px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
-                .hero, .card, .pricing { background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; border-radius: 18px; padding: 1.5rem; margin-bottom: 1rem; }
+                .hero, .card, .pricing { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(148,163,184,0.2); border-radius: 22px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 16px 40px rgba(2,6,23,0.16); }
                 .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
                 a { color: #93c5fd; }
-                .button { display: inline-block; margin-top: 1rem; padding: 0.8rem 1.1rem; border-radius: 999px; background: #2563eb; color: white; text-decoration: none; }
-                .pill { display: inline-block; padding: 0.35rem 0.7rem; border-radius: 999px; background: #1d4ed8; margin-right: 0.5rem; font-size: 0.85rem; }
+                .button { display: inline-block; margin-top: 1rem; padding: 0.85rem 1.1rem; border-radius: 999px; background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; text-decoration: none; margin-right: 0.5rem; }
+                .button.secondary { background: linear-gradient(135deg, #0f766e, #14b8a6); }
+                .pill { display: inline-block; padding: 0.35rem 0.7rem; border-radius: 999px; background: rgba(79,209,197,0.2); color: #99f6e4; margin-right: 0.5rem; font-size: 0.85rem; }
                 ul { padding-left: 1.1rem; }
                 .price { font-size: 2rem; font-weight: 700; }
+                .eyebrow { text-transform: uppercase; letter-spacing: 0.2em; color: #5eead4; font-size: 0.8rem; font-weight: 700; }
+                .hero p { line-height: 1.7; color: #cbd5e1; }
             </style>
         </head>
         <body>
             <main>
                 <section class=\"hero\">
-                    <h1>RecoveryOS</h1>
-                    <p>Privacy-first recovery coordination for patients, counselors, families, facilities, and payors.</p>
-                    <p><span class=\"pill\">HIPAA-ready controls</span><span class=\"pill\">Medicaid/insurance-aligned workflows</span><span class=\"pill\">Role-based access</span></p>
-                    <a class=\"button\" href=\"/app/\">Open the RecoveryOS app</a>
-                    <a class="button" href="/login" style="margin-left:0.5rem; background:#0f766e;">Log in</a>
-                    <a class="button" href="/signup" style="margin-left:0.5rem; background:#0f766e;">Create account</a>
+                    <p class="eyebrow">RecoveryOS</p>
+                    <h1>Modern recovery coordination for patients, care teams, and families.</h1>
+                    <p>Bring daily support, compliance-ready care workflows, and role-based collaboration into a single calm, secure operating system.</p>
+                    <p><span class="pill">HIPAA-ready controls</span><span class="pill">Medicaid/insurance-aligned workflows</span><span class="pill">Role-based access</span></p>
+                    <a class="button" href="/app/">Explore the platform</a>
+                    <a class="button secondary" href="/login">Log in</a>
+                    <a class="button secondary" href="/signup">Create account</a>
                 </section>
 
                 <section class=\"grid\">
@@ -241,18 +246,23 @@ def login_page() -> fastapi.responses.HTMLResponse:
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
             <title>Log in to RecoveryOS</title>
             <style>
-                body { font-family: Inter, Arial, sans-serif; margin: 0; background: #0f172a; color: #f8fafc; }
-                main { max-width: 560px; margin: 4rem auto; padding: 2rem; background: #111827; border: 1px solid #334155; border-radius: 20px; }
-                label { display: block; margin-top: 1rem; }
-                input, select, button { width: 100%; padding: 0.75rem; margin-top: 0.35rem; border-radius: 10px; border: 1px solid #334155; }
-                button { background: #2563eb; color: white; border: none; cursor: pointer; }
+                :root { color-scheme: dark; }
+                body { font-family: Inter, Arial, sans-serif; margin: 0; min-height: 100vh; background: radial-gradient(circle at top left, rgba(79,209,197,0.22), transparent 24%), linear-gradient(135deg, #040816, #0f172a 50%, #18253c); color: #f8fafc; }
+                main { max-width: 560px; margin: 4rem auto; padding: 2rem; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(148,163,184,0.2); border-radius: 24px; box-shadow: 0 20px 50px rgba(2,6,23,0.16); }
+                .eyebrow { text-transform: uppercase; letter-spacing: 0.2em; color: #5eead4; font-size: 0.8rem; font-weight: 700; }
+                label { display: block; margin-top: 1rem; color: #cbd5e1; }
+                input, select, button { width: 100%; padding: 0.8rem; margin-top: 0.35rem; border-radius: 12px; border: 1px solid rgba(148,163,184,0.3); }
+                input, select { background: rgba(2,6,23,0.82); color: #f8fafc; }
+                button { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; cursor: pointer; }
                 a { color: #93c5fd; }
+                .brand { margin-bottom: 0.75rem; font-size: 1.05rem; color: #99f6e4; }
             </style>
         </head>
         <body>
             <main>
+                <p class="eyebrow">RecoveryOS by Deacons Legacy</p>
                 <h1>Log in to RecoveryOS</h1>
-                <p>Secure access for patients, counselors, families, and facilities.</p>
+                <p class="brand">Secure access for patients, counselors, families, and facilities.</p>
                 <form action=\"/auth/login\" method=\"post\">
                     <label>Role
                         <select name=\"role\">
@@ -286,18 +296,23 @@ def signup_page() -> fastapi.responses.HTMLResponse:
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
             <title>Create your RecoveryOS account</title>
             <style>
-                body { font-family: Inter, Arial, sans-serif; margin: 0; background: #0f172a; color: #f8fafc; }
-                main { max-width: 560px; margin: 4rem auto; padding: 2rem; background: #111827; border: 1px solid #334155; border-radius: 20px; }
-                label { display: block; margin-top: 1rem; }
-                input, select, button { width: 100%; padding: 0.75rem; margin-top: 0.35rem; border-radius: 10px; border: 1px solid #334155; }
-                button { background: #2563eb; color: white; border: none; cursor: pointer; }
+                :root { color-scheme: dark; }
+                body { font-family: Inter, Arial, sans-serif; margin: 0; min-height: 100vh; background: radial-gradient(circle at top left, rgba(79,209,197,0.22), transparent 24%), linear-gradient(135deg, #040816, #0f172a 50%, #18253c); color: #f8fafc; }
+                main { max-width: 560px; margin: 4rem auto; padding: 2rem; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(148,163,184,0.2); border-radius: 24px; box-shadow: 0 20px 50px rgba(2,6,23,0.16); }
+                .eyebrow { text-transform: uppercase; letter-spacing: 0.2em; color: #5eead4; font-size: 0.8rem; font-weight: 700; }
+                label { display: block; margin-top: 1rem; color: #cbd5e1; }
+                input, select, button { width: 100%; padding: 0.8rem; margin-top: 0.35rem; border-radius: 12px; border: 1px solid rgba(148,163,184,0.3); }
+                input, select { background: rgba(2,6,23,0.82); color: #f8fafc; }
+                button { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; cursor: pointer; }
                 a { color: #93c5fd; }
+                .brand { margin-bottom: 0.75rem; font-size: 1.05rem; color: #99f6e4; }
             </style>
         </head>
         <body>
             <main>
+                <p class="eyebrow">RecoveryOS by Deacons Legacy</p>
                 <h1>Create your RecoveryOS account</h1>
-                <p>Launch faster with guided onboarding, role-based access, and compliance-ready controls.</p>
+                <p class="brand">Launch faster with guided onboarding, role-based access, and compliance-ready controls.</p>
                 <form action=\"/auth/signup\" method=\"post\">
                     <label>Role
                         <select name=\"role\">
@@ -334,14 +349,17 @@ def compliance_page() -> fastapi.responses.HTMLResponse:
             <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
             <title>RecoveryOS Compliance</title>
             <style>
-                body { font-family: Inter, Arial, sans-serif; margin: 0; background: #0f172a; color: #f8fafc; }
-                main { max-width: 860px; margin: 3rem auto; padding: 2rem; background: #111827; border: 1px solid #334155; border-radius: 20px; }
-                .card { background: rgba(15,23,42,0.9); border: 1px solid #334155; border-radius: 16px; padding: 1rem 1.2rem; margin-bottom: 1rem; }
+                :root { color-scheme: dark; }
+                body { font-family: Inter, Arial, sans-serif; margin: 0; min-height: 100vh; background: radial-gradient(circle at top left, rgba(79,209,197,0.22), transparent 24%), linear-gradient(135deg, #040816, #0f172a 50%, #18253c); color: #f8fafc; }
+                main { max-width: 860px; margin: 3rem auto; padding: 2rem; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(148,163,184,0.2); border-radius: 24px; box-shadow: 0 20px 50px rgba(2,6,23,0.16); }
+                .card { background: rgba(15,23,42,0.9); border: 1px solid rgba(148,163,184,0.2); border-radius: 18px; padding: 1rem 1.2rem; margin-bottom: 1rem; }
+                .eyebrow { text-transform: uppercase; letter-spacing: 0.2em; color: #5eead4; font-size: 0.8rem; font-weight: 700; }
                 strong { color: #93c5fd; }
             </style>
         </head>
         <body>
             <main>
+                <p class="eyebrow">RecoveryOS by Deacons Legacy</p>
                 <h1>Insurance and Medicaid readiness</h1>
                 <p>RecoveryOS is designed for organizations that need role-aware workflows, consent handling, audit trails, and privacy controls from day one.</p>
                 <div class=\"card\"><strong>Insurance</strong><br/>Supports claims-ready documentation workflows, auditability, and structured care records.</div>

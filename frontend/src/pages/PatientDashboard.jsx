@@ -23,7 +23,10 @@ export default function PatientDashboard() {
   return (
     <section className="page-stack">
       <div className="card wide-card">
-        <h2>Patient dashboard</h2>
+        <div className="card-header">
+          <p className="eyebrow">RecoveryOS workspace</p>
+          <h2>Patient dashboard</h2>
+        </div>
         {dashboard ? (
           <>
             <p><strong>Patient:</strong> {dashboard.patient_id}</p>
