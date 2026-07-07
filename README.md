@@ -199,12 +199,21 @@ API endpoints remain under `/` (e.g. `/health`, `/auth/login`, `/patient/timelin
 - The workflow uses the repository `GITHUB_TOKEN` to publish the image to GHCR as `ghcr.io/<owner>/<repo>:latest` on pushes to `main`.
 - To pull the image from other contexts, you may need to grant package read permissions or create a PAT for external access.
 
+## Release workflow
+
+- Reuse `.github/release-notes-template.md` for each new GitHub release.
+- Replace `vX.Y.Z` placeholders with the target tag and update each section before publishing.
+- Recommended publish flow:
+  1. `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+  2. `git push origin main --tags`
+  3. `gh release create vX.Y.Z --repo deaconslegacy-pixel/RecoveryOS --title "RecoveryOS by Deacons Legacy vX.Y.Z" --notes-file .github/release-notes-template.md`
+
 ## Next steps (I can help with any of these)
 
 - Scaffold Alembic migrations and add an initial migration.
 - Add a deploy step to the GitHub Actions workflow for Cloud Run, ECS (ECR), or Render.
 - Add authentication (OAuth / OIDC) or integrate with an identity provider.
-- Draft a simple pricing/onboarding README and GitHub Release notes for `v0.1.0`.
+- Draft a versioned release notes file for `v0.1.1` using the new template.
 
 ---
 
