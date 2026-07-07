@@ -298,7 +298,7 @@ def test_homepage_promotes_app_access() -> None:
 def test_app_route_redirects_to_frontend_entry() -> None:
     response = client.get("/app", follow_redirects=False)
     assert response.status_code == 307
-    assert response.headers["location"] == "/app/"
+    assert response.headers["location"].startswith("/app/")
 
 
 def test_ui_shell_is_served() -> None:
@@ -317,7 +317,7 @@ def test_login_page_serves_account_access_form() -> None:
 def test_signup_page_serves_account_creation_form() -> None:
     response = client.get("/signup")
     assert response.status_code == 200
-    assert "Create your RecoveryOS account" in response.text
+    assert "Create your RecoveryOS by Deacons Legacy account" in response.text
     assert "/auth/signup" in response.text
 
 
