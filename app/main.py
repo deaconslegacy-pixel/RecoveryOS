@@ -170,9 +170,6 @@ def ui_shell() -> fastapi.responses.HTMLResponse:
 
 @app.get("/", include_in_schema=False)
 def homepage() -> fastapi.responses.Response:
-    if FRONTEND_DIR.exists():
-        return fastapi.responses.RedirectResponse(url=f"/app/?v={SHORT_BUILD_ID}", status_code=307)
-
     return fastapi.responses.HTMLResponse(
         content=with_build_stamp("""
         <!doctype html>

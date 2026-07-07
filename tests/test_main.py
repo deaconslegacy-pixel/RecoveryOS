@@ -301,6 +301,12 @@ def test_app_route_redirects_to_frontend_entry() -> None:
     assert response.headers["location"].startswith("/app/?v=")
 
 
+def test_root_serves_branded_homepage() -> None:
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code == 200
+    assert "RecoveryOS by Deacons Legacy" in response.text
+
+
 def test_ui_shell_is_served() -> None:
     response = client.get("/ui")
     assert response.status_code == 200
