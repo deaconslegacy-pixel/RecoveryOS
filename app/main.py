@@ -11,6 +11,24 @@ from app import storage
 
 app = fastapi.FastAPI(title="RecoveryOS", version="0.1.0")
 
+RAW_BUILD_ID = (
+    os.getenv("RECOVERYOS_BUILD_ID")
+    or os.getenv("RENDER_GIT_COMMIT")
+    or os.getenv("GITHUB_SHA")
+    or os.getenv("HEROKU_SLUG_COMMIT")
+    or "local"
+)
+SHORT_BUILD_ID = RAW_BUILD_ID[:7] if RAW_BUILD_ID != "local" else RAW_BUILD_ID
+BUILD_STAMP_TEXT = f"RecoveryOS by Deacons Legacy | v{app.version} | {SHORT_BUILD_ID}"
+BUILD_STAMP_HTML = (
+    "<p style=\"margin-top:1.2rem;font-size:0.78rem;letter-spacing:0.04em;color:#94a3b8;\">"
+    f"{BUILD_STAMP_TEXT}</p>"
+)
+
+
+def with_build_stamp(html: str) -> str:
+    return html.replace("</main>", f"{BUILD_STAMP_HTML}</main>", 1)
+
 # If a built frontend exists (copied into the image at build-time), serve it at /app/.
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend_dist"
 if FRONTEND_DIR.exists():
@@ -26,6 +44,11 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["permissions-policy"] = (
             "geolocation=(), microphone=(), camera=()"
         )
+        content_type = response.headers.get("content-type", "")
+        if content_type.startswith("text/html"):
+            response.headers["cache-control"] = "no-store, no-cache, must-revalidate, max-age=0"
+            response.headers["pragma"] = "no-cache"
+            response.headers["expires"] = "0"
         return response
 
 
@@ -105,7 +128,7 @@ def health() -> dict[str, str]:
 @app.get("/ui")
 def ui_shell() -> fastapi.responses.HTMLResponse:
     return fastapi.responses.HTMLResponse(
-        content="""
+        content=with_build_stamp("""
         <!doctype html>
         <html lang=\"en\">
         <head>
@@ -141,17 +164,17 @@ def ui_shell() -> fastapi.responses.HTMLResponse:
             </main>
         </body>
         </html>
-        """
+        """)
     )
 
 
 @app.get("/", include_in_schema=False)
 def homepage() -> fastapi.responses.Response:
     if FRONTEND_DIR.exists():
-        return fastapi.responses.RedirectResponse(url="/app/", status_code=307)
+        return fastapi.responses.RedirectResponse(url=f"/app/?v={SHORT_BUILD_ID}", status_code=307)
 
     return fastapi.responses.HTMLResponse(
-        content="""
+        content=with_build_stamp("""
         <!doctype html>
         <html lang=\"en\">
         <head>
@@ -230,19 +253,19 @@ def homepage() -> fastapi.responses.Response:
             </main>
         </body>
         </html>
-        """
+        """)
     )
 
 
 @app.get("/app", include_in_schema=False)
 def app_entry_redirect() -> fastapi.responses.RedirectResponse:
-    return fastapi.responses.RedirectResponse(url="/app/", status_code=307)
+    return fastapi.responses.RedirectResponse(url=f"/app/?v={SHORT_BUILD_ID}", status_code=307)
 
 
 @app.get("/login", include_in_schema=False)
 def login_page() -> fastapi.responses.HTMLResponse:
     return fastapi.responses.HTMLResponse(
-        content="""
+        content=with_build_stamp("""
         <!doctype html>
         <html lang=\"en\">
         <head>
@@ -285,14 +308,14 @@ def login_page() -> fastapi.responses.HTMLResponse:
             </main>
         </body>
         </html>
-        """
+        """)
     )
 
 
 @app.get("/signup", include_in_schema=False)
 def signup_page() -> fastapi.responses.HTMLResponse:
     return fastapi.responses.HTMLResponse(
-        content="""
+        content=with_build_stamp("""
         <!doctype html>
         <html lang=\"en\">
         <head>
@@ -338,14 +361,14 @@ def signup_page() -> fastapi.responses.HTMLResponse:
             </main>
         </body>
         </html>
-        """
+        """)
     )
 
 
 @app.get("/compliance", include_in_schema=False)
 def compliance_page() -> fastapi.responses.HTMLResponse:
     return fastapi.responses.HTMLResponse(
-        content="""
+        content=with_build_stamp("""
         <!doctype html>
         <html lang=\"en\">
         <head>
@@ -373,7 +396,7 @@ def compliance_page() -> fastapi.responses.HTMLResponse:
             </main>
         </body>
         </html>
-        """
+        """)
     )
 
 
