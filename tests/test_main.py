@@ -12,6 +12,15 @@ def test_health() -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_version() -> None:
+    response = client.get("/version")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["app"] == "RecoveryOS by Deacons Legacy"
+    assert body["version"] == "0.1.0"
+    assert "build_id" in body
+
+
 def test_security_headers_are_applied() -> None:
     response = client.get("/health")
     assert response.headers["x-content-type-options"] == "nosniff"

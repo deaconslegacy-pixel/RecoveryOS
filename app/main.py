@@ -125,6 +125,15 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/version")
+def version() -> dict[str, str]:
+    return {
+        "app": "RecoveryOS by Deacons Legacy",
+        "version": app.version,
+        "build_id": SHORT_BUILD_ID,
+    }
+
+
 @app.get("/ui")
 def ui_shell() -> fastapi.responses.HTMLResponse:
     return fastapi.responses.HTMLResponse(
