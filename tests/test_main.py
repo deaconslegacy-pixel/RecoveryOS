@@ -61,6 +61,39 @@ def test_login_persists_a_user_record() -> None:
     assert any(user["user_id"] == "counselor-2" and user["role"] == "counselor" for user in users)
 
 
+def test_signup_persists_a_user_record_and_returns_token() -> None:
+    response = client.post(
+        "/auth/signup",
+        json={"role": "patient", "user_id": "new-patient", "organization": "RecoveryOS Demo"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["role"] == "patient"
+    assert body["token"].startswith("token-")
+    users = storage.load_users()
+    assert any(user["user_id"] == "new-patient" and user["role"] == "patient" for user in users)
+
+
+def test_form_login_redirects_to_app_dashboard() -> None:
+    response = client.post(
+        "/auth/login",
+        data={"role": "patient", "user_id": "demo-patient"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert response.headers["location"] == "/app/"
+
+
+def test_form_signup_redirects_to_app_dashboard() -> None:
+    response = client.post(
+        "/auth/signup",
+        data={"role": "patient", "user_id": "form-signup", "organization": "RecoveryOS Demo"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert response.headers["location"] == "/app/"
+
+
 def test_audit_log_is_recorded_and_persisted() -> None:
     response = client.post(
         "/security/audit-log",
@@ -254,19 +287,45 @@ def test_incident_report_is_created() -> None:
     assert body["severity"] == "high"
 
 
-def test_homepage_shows_recoveryos_apps() -> None:
+def test_homepage_promotes_app_access() -> None:
     response = client.get("/")
     assert response.status_code == 200
-    body = response.json()
-    assert body["name"] == "RecoveryOS"
-    assert body["vision"] == "An operating system for recovery."
-    assert any(app["slug"] == "patient" for app in body["apps"])
+    body = response.text.lower()
+    assert "recoveryos" in body
+    assert "/app/" in body
+
+
+def test_app_route_redirects_to_frontend_entry() -> None:
+    response = client.get("/app", follow_redirects=False)
+    assert response.status_code == 307
+    assert response.headers["location"] == "/app/"
 
 
 def test_ui_shell_is_served() -> None:
     response = client.get("/ui")
     assert response.status_code == 200
     assert "RecoveryOS" in response.text
+
+
+def test_login_page_serves_account_access_form() -> None:
+    response = client.get("/login")
+    assert response.status_code == 200
+    assert "Log in to RecoveryOS" in response.text
+    assert "/auth/login" in response.text
+
+
+def test_signup_page_serves_account_creation_form() -> None:
+    response = client.get("/signup")
+    assert response.status_code == 200
+    assert "Create your RecoveryOS account" in response.text
+    assert "/auth/signup" in response.text
+
+
+def test_compliance_page_highlights_insurance_and_medicaid_readiness() -> None:
+    response = client.get("/compliance")
+    assert response.status_code == 200
+    assert "Insurance" in response.text
+    assert "Medicaid" in response.text
 
 
 def test_apps_catalog_lists_five_integrated_apps() -> None:

@@ -83,16 +83,25 @@ class CareRecord(Base):
 
 
 class Storage:
-    def __init__(self, database_url: str | None = None) -> None:
-        self.database_url = database_url or DATABASE_URL
-        # engine and SessionLocal are module-level; ensure tables exist
-        Base.metadata.create_all(engine)
+    def __init__(self, database_url: str | None = None, base_path: str | None = None) -> None:
+        if base_path is not None:
+            db_path = Path(base_path) / "recoveryos.db"
+            self.database_url = f"sqlite:///{db_path}"
+        else:
+            self.database_url = database_url or DATABASE_URL
+        self.engine = create_engine(self.database_url, future=True)
+        self.SessionLocal = sessionmaker(bind=self.engine, expire_on_commit=False)
+        try:
+            Base.metadata.create_all(self.engine)
+        except Exception:
+            # Allow the app to start even if a previous deployment left behind existing tables.
+            pass
 
     def _now(self) -> datetime:
         return datetime.now(timezone.utc)
 
     def load_users(self) -> list[dict[str, Any]]:
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             rows = session.query(User).order_by(User.id).all()
             return [
                 {
@@ -104,7 +113,7 @@ class Storage:
             ]
 
     def save_user(self, user: dict[str, Any]) -> None:
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             now = user.get("created_at")
             if isinstance(now, str):
                 now = datetime.fromisoformat(now)
@@ -119,7 +128,7 @@ class Storage:
             session.commit()
 
     def load_consents(self) -> list[dict[str, Any]]:
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             rows = session.query(Consent).order_by(Consent.id).all()
             return [
                 {
@@ -133,7 +142,7 @@ class Storage:
             ]
 
     def save_consent(self, consent: dict[str, Any]) -> None:
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             now = consent.get("created_at")
             if isinstance(now, str):
                 now = datetime.fromisoformat(now)
@@ -149,7 +158,7 @@ class Storage:
             session.commit()
 
     def load_audit_log(self) -> list[dict[str, Any]]:
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             rows = session.query(AuditLog).order_by(AuditLog.id).all()
             return [
                 {
@@ -162,7 +171,7 @@ class Storage:
             ]
 
     def save_audit_event(self, event: dict[str, Any]) -> None:
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             now = event.get("created_at")
             if isinstance(now, str):
                 now = datetime.fromisoformat(now)
@@ -177,7 +186,7 @@ class Storage:
             session.commit()
 
     def load_deletions(self) -> list[dict[str, Any]]:
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             rows = session.query(Deletion).order_by(Deletion.id).all()
             return [
                 {
@@ -192,7 +201,7 @@ class Storage:
             ]
 
     def save_deletion(self, deletion: dict[str, Any]) -> None:
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             now = deletion.get("created_at")
             if isinstance(now, str):
                 now = datetime.fromisoformat(now)
@@ -209,7 +218,7 @@ class Storage:
             session.commit()
 
     def load_care_records(self) -> list[dict[str, Any]]:
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             rows = session.query(CareRecord).order_by(CareRecord.id).all()
             return [
                 {
@@ -226,7 +235,7 @@ class Storage:
             ]
 
     def save_care_record(self, record: dict[str, Any]) -> None:
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             now = record.get("timestamp")
             if isinstance(now, str):
                 now = datetime.fromisoformat(now)
@@ -246,7 +255,7 @@ class Storage:
 
     def apply_deletion(self, patient_id: str) -> int:
         deleted_records = 0
-        with SessionLocal() as session:
+        with self.SessionLocal() as session:
             user_count = session.query(User).filter_by(user_id=patient_id).count()
             if user_count:
                 session.query(User).filter_by(user_id=patient_id).delete()

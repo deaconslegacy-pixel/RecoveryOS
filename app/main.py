@@ -11,10 +11,10 @@ from app import storage
 
 app = fastapi.FastAPI(title="RecoveryOS", version="0.1.0")
 
-# If a built frontend exists (copied into the image at build-time), serve it at root.
+# If a built frontend exists (copied into the image at build-time), serve it at /app/.
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend_dist"
 if FRONTEND_DIR.exists():
-    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
+    app.mount("/app", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -91,6 +91,12 @@ class LoginRequest(pydantic.BaseModel):
     user_id: str
 
 
+class SignupRequest(pydantic.BaseModel):
+    role: str
+    user_id: str
+    organization: str | None = None
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
@@ -138,39 +144,215 @@ def ui_shell() -> fastapi.responses.HTMLResponse:
     )
 
 
-@app.get("/")
-def homepage() -> dict[str, object]:
-    return {
-        "name": "RecoveryOS",
-        "vision": "An operating system for recovery.",
-        "apps": [
-            {
-                "slug": "patient",
-                "name": "Patient App",
-                "description": "AI recovery companion with daily check-ins, journaling, and crisis tools.",
-            },
-            {
-                "slug": "counselor",
-                "name": "Counselor Dashboard",
-                "description": "Caseload insights, risk alerts, and AI documentation.",
-            },
-            {
-                "slug": "family",
-                "name": "Family App",
-                "description": "Education, communication tools, and progress updates.",
-            },
-            {
-                "slug": "facility",
-                "name": "Facility Dashboard",
-                "description": "Analytics, outcomes, compliance, and staff insights.",
-            },
-            {
-                "slug": "intelligence",
-                "name": "AI Intelligence Layer",
-                "description": "Predictive relapse scoring and personalized recommendations.",
-            },
-        ],
-    }
+@app.get("/", include_in_schema=False)
+def homepage() -> fastapi.responses.HTMLResponse:
+    return fastapi.responses.HTMLResponse(
+        content="""
+        <!doctype html>
+        <html lang=\"en\">
+        <head>
+            <meta charset=\"utf-8\">
+            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+            <title>RecoveryOS | Privacy-first recovery operating system</title>
+            <style>
+                body { font-family: Inter, Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #0f172a, #111827); color: #f8fafc; }
+                main { max-width: 1120px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+                .hero, .card, .pricing { background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; border-radius: 18px; padding: 1.5rem; margin-bottom: 1rem; }
+                .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+                a { color: #93c5fd; }
+                .button { display: inline-block; margin-top: 1rem; padding: 0.8rem 1.1rem; border-radius: 999px; background: #2563eb; color: white; text-decoration: none; }
+                .pill { display: inline-block; padding: 0.35rem 0.7rem; border-radius: 999px; background: #1d4ed8; margin-right: 0.5rem; font-size: 0.85rem; }
+                ul { padding-left: 1.1rem; }
+                .price { font-size: 2rem; font-weight: 700; }
+            </style>
+        </head>
+        <body>
+            <main>
+                <section class=\"hero\">
+                    <h1>RecoveryOS</h1>
+                    <p>Privacy-first recovery coordination for patients, counselors, families, facilities, and payors.</p>
+                    <p><span class=\"pill\">HIPAA-ready controls</span><span class=\"pill\">Medicaid/insurance-aligned workflows</span><span class=\"pill\">Role-based access</span></p>
+                    <a class=\"button\" href=\"/app/\">Open the RecoveryOS app</a>
+                    <a class="button" href="/login" style="margin-left:0.5rem; background:#0f766e;">Log in</a>
+                    <a class="button" href="/signup" style="margin-left:0.5rem; background:#0f766e;">Create account</a>
+                </section>
+
+                <section class=\"grid\">
+                    <div class=\"card\">
+                        <h2>For patients</h2>
+                        <p>Daily check-ins, journal prompts, crisis supports, and progress visibility.</p>
+                    </div>
+                    <div class=\"card\">
+                        <h2>For counselors</h2>
+                        <p>Caseload views, alerts, documentation support, and treatment planning workflows.</p>
+                    </div>
+                    <div class=\"card\">
+                        <h2>For families & facilities</h2>
+                        <p>Permissioned support tools, reporting, and compliance-ready audit trails.</p>
+                    </div>
+                </section>
+
+                <section class=\"pricing\">
+                    <h2>Pricing</h2>
+                    <div class=\"grid\">
+                        <div class=\"card\">
+                            <h3>Starter</h3>
+                            <p class=\"price\">$49/mo</p>
+                            <ul><li>1 care team</li><li>Basic dashboards</li><li>Encrypted data handling</li></ul>
+                        </div>
+                        <div class=\"card\">
+                            <h3>Clinical</h3>
+                            <p class=\"price\">$149/mo</p>
+                            <ul><li>Multi-role access</li><li>Audit logging & retention</li><li>Insurance-ready reporting</li></ul>
+                        </div>
+                        <div class=\"card\">
+                            <h3>Enterprise</h3>
+                            <p class=\"price\">Custom</p>
+                            <ul><li>SSO & advanced integrations</li><li>Compliance and risk review</li><li>Dedicated onboarding</li></ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class=\"card\">
+                    <h2>Compliance posture</h2>
+                    <p>RecoveryOS is designed with least-privilege access, consent management, role-based controls, audit logging, retention workflows, and privacy-first architecture intended to support insurance and Medicaid-aligned implementation reviews.</p>
+                    <p>For production deployment, legal, compliance, and clinical governance review should confirm your local policy and billing requirements.</p>
+                </section>
+            </main>
+        </body>
+        </html>
+        """
+    )
+
+
+@app.get("/app", include_in_schema=False)
+def app_entry_redirect() -> fastapi.responses.RedirectResponse:
+    return fastapi.responses.RedirectResponse(url="/app/", status_code=307)
+
+
+@app.get("/login", include_in_schema=False)
+def login_page() -> fastapi.responses.HTMLResponse:
+    return fastapi.responses.HTMLResponse(
+        content="""
+        <!doctype html>
+        <html lang=\"en\">
+        <head>
+            <meta charset=\"utf-8\">
+            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+            <title>Log in to RecoveryOS</title>
+            <style>
+                body { font-family: Inter, Arial, sans-serif; margin: 0; background: #0f172a; color: #f8fafc; }
+                main { max-width: 560px; margin: 4rem auto; padding: 2rem; background: #111827; border: 1px solid #334155; border-radius: 20px; }
+                label { display: block; margin-top: 1rem; }
+                input, select, button { width: 100%; padding: 0.75rem; margin-top: 0.35rem; border-radius: 10px; border: 1px solid #334155; }
+                button { background: #2563eb; color: white; border: none; cursor: pointer; }
+                a { color: #93c5fd; }
+            </style>
+        </head>
+        <body>
+            <main>
+                <h1>Log in to RecoveryOS</h1>
+                <p>Secure access for patients, counselors, families, and facilities.</p>
+                <form action=\"/auth/login\" method=\"post\">
+                    <label>Role
+                        <select name=\"role\">
+                            <option value=\"patient\">Patient</option>
+                            <option value=\"counselor\">Counselor</option>
+                            <option value=\"family\">Family</option>
+                            <option value=\"facility_admin\">Facility</option>
+                        </select>
+                    </label>
+                    <label>User ID
+                        <input name=\"user_id\" value=\"demo-patient\" />
+                    </label>
+                    <button type=\"submit\">Log in</button>
+                </form>
+                <p><a href=\"/signup\">Create an account</a></p>
+            </main>
+        </body>
+        </html>
+        """
+    )
+
+
+@app.get("/signup", include_in_schema=False)
+def signup_page() -> fastapi.responses.HTMLResponse:
+    return fastapi.responses.HTMLResponse(
+        content="""
+        <!doctype html>
+        <html lang=\"en\">
+        <head>
+            <meta charset=\"utf-8\">
+            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+            <title>Create your RecoveryOS account</title>
+            <style>
+                body { font-family: Inter, Arial, sans-serif; margin: 0; background: #0f172a; color: #f8fafc; }
+                main { max-width: 560px; margin: 4rem auto; padding: 2rem; background: #111827; border: 1px solid #334155; border-radius: 20px; }
+                label { display: block; margin-top: 1rem; }
+                input, select, button { width: 100%; padding: 0.75rem; margin-top: 0.35rem; border-radius: 10px; border: 1px solid #334155; }
+                button { background: #2563eb; color: white; border: none; cursor: pointer; }
+                a { color: #93c5fd; }
+            </style>
+        </head>
+        <body>
+            <main>
+                <h1>Create your RecoveryOS account</h1>
+                <p>Launch faster with guided onboarding, role-based access, and compliance-ready controls.</p>
+                <form action=\"/auth/signup\" method=\"post\">
+                    <label>Role
+                        <select name=\"role\">
+                            <option value=\"patient\">Patient</option>
+                            <option value=\"counselor\">Counselor</option>
+                            <option value=\"family\">Family</option>
+                            <option value=\"facility_admin\">Facility</option>
+                        </select>
+                    </label>
+                    <label>User ID
+                        <input name=\"user_id\" placeholder=\"you@example.com\" />
+                    </label>
+                    <label>Organization
+                        <input name=\"organization\" placeholder=\"Your organization or clinic\" />
+                    </label>
+                    <button type=\"submit\">Create account</button>
+                </form>
+                <p><a href=\"/login\">Already have an account?</a></p>
+            </main>
+        </body>
+        </html>
+        """
+    )
+
+
+@app.get("/compliance", include_in_schema=False)
+def compliance_page() -> fastapi.responses.HTMLResponse:
+    return fastapi.responses.HTMLResponse(
+        content="""
+        <!doctype html>
+        <html lang=\"en\">
+        <head>
+            <meta charset=\"utf-8\">
+            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+            <title>RecoveryOS Compliance</title>
+            <style>
+                body { font-family: Inter, Arial, sans-serif; margin: 0; background: #0f172a; color: #f8fafc; }
+                main { max-width: 860px; margin: 3rem auto; padding: 2rem; background: #111827; border: 1px solid #334155; border-radius: 20px; }
+                .card { background: rgba(15,23,42,0.9); border: 1px solid #334155; border-radius: 16px; padding: 1rem 1.2rem; margin-bottom: 1rem; }
+                strong { color: #93c5fd; }
+            </style>
+        </head>
+        <body>
+            <main>
+                <h1>Insurance and Medicaid readiness</h1>
+                <p>RecoveryOS is designed for organizations that need role-aware workflows, consent handling, audit trails, and privacy controls from day one.</p>
+                <div class=\"card\"><strong>Insurance</strong><br/>Supports claims-ready documentation workflows, auditability, and structured care records.</div>
+                <div class=\"card\"><strong>Medicaid</strong><br/>Supports compliance-aligned documentation practices and administrative workflows for state and payer review.</div>
+                <div class=\"card\"><strong>Clinical governance</strong><br/>Includes least-privilege access, consent workflows, retention policies, and security monitoring.</div>
+                <p>Use this page to support implementation conversations with compliance, legal, and billing teams.</p>
+            </main>
+        </body>
+        </html>
+        """
+    )
 
 
 @app.get("/apps")
@@ -298,8 +480,24 @@ def delete_data(data: DataDeletionRequest) -> dict[str, object]:
     return deletion_record
 
 
-@app.post("/auth/login")
-def login(data: LoginRequest) -> dict[str, str]:
+@app.post("/auth/login", response_model=None)
+async def login(request: fastapi.Request) -> Response:
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        payload = await request.json()
+    else:
+        form = await request.form()
+        payload = {
+            "role": form.get("role"),
+            "user_id": form.get("user_id"),
+        }
+
+    role = payload.get("role")
+    user_id = payload.get("user_id")
+    if not isinstance(role, str) or not isinstance(user_id, str):
+        raise fastapi.HTTPException(status_code=400, detail="role and user_id are required")
+
+    data = LoginRequest(role=role, user_id=user_id)
     if data.role not in {"patient", "counselor", "family", "facility_admin"}:
         raise fastapi.HTTPException(status_code=403, detail="Unsupported role")
     user_record = {"user_id": data.user_id, "role": data.role}
@@ -307,7 +505,40 @@ def login(data: LoginRequest) -> dict[str, str]:
     token = f"token-{data.user_id}"
     if data.role == "patient" and data.user_id == "demo-patient":
         token = "token-demo-patient"
-    return {"token": token, "role": data.role}
+
+    if "application/json" in content_type:
+        return fastapi.responses.JSONResponse({"token": token, "role": data.role})
+    return fastapi.responses.RedirectResponse(url="/app/", status_code=303)
+
+
+@app.post("/auth/signup", response_model=None)
+async def signup(request: fastapi.Request) -> Response:
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        payload = await request.json()
+    else:
+        form = await request.form()
+        payload = {
+            "role": form.get("role"),
+            "user_id": form.get("user_id"),
+            "organization": form.get("organization"),
+        }
+
+    role = payload.get("role")
+    user_id = payload.get("user_id")
+    organization = payload.get("organization")
+    if not isinstance(role, str) or not isinstance(user_id, str):
+        raise fastapi.HTTPException(status_code=400, detail="role and user_id are required")
+
+    data = SignupRequest(role=role, user_id=user_id, organization=organization if isinstance(organization, str) else None)
+    if data.role not in {"patient", "counselor", "family", "facility_admin"}:
+        raise fastapi.HTTPException(status_code=403, detail="Unsupported role")
+    user_record = {"user_id": data.user_id, "role": data.role}
+    storage.save_user(user_record)
+    token = f"token-{data.user_id}"
+    if "application/json" in content_type:
+        return fastapi.responses.JSONResponse({"token": token, "role": data.role, "organization": data.organization or ""})
+    return fastapi.responses.RedirectResponse(url="/app/", status_code=303)
 
 
 @app.get("/auth/me")
