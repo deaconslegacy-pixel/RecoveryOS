@@ -75,18 +75,41 @@ jobs:
     needs: build-test-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    env:
-      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT || vars.GCP_PROJECT }}
-      GCP_REGION: ${{ secrets.GCP_REGION || vars.GCP_REGION || 'us-central1' }}
-      CLOUD_RUN_SERVICE: ${{ secrets.CLOUD_RUN_SERVICE || vars.CLOUD_RUN_SERVICE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Resolve deploy configuration
+        id: resolve
+        env:
+          INPUT_PROJECT_ID: ${{ secrets.GCP_PROJECT || vars.GCP_PROJECT }}
+          INPUT_REGION: ${{ secrets.GCP_REGION || vars.GCP_REGION }}
+          INPUT_SERVICE: ${{ secrets.CLOUD_RUN_SERVICE || vars.CLOUD_RUN_SERVICE }}
+          GCP_SA_KEY_JSON: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          PROJECT_ID="$INPUT_PROJECT_ID"
+          REGION="$INPUT_REGION"
+          SERVICE="$INPUT_SERVICE"
+
+          if [ -z "$PROJECT_ID" ] && [ -n "$GCP_SA_KEY_JSON" ]; then
+            PROJECT_ID="$(printf '%s' "$GCP_SA_KEY_JSON" | jq -r '.project_id // empty')"
+          fi
+
+          if [ -z "$REGION" ]; then
+            REGION="us-central1"
+          fi
+
+          if [ -z "$SERVICE" ]; then
+            SERVICE="recoveryos"
+          fi
+
+          echo "project_id=$PROJECT_ID" >> "$GITHUB_OUTPUT"
+          echo "region=$REGION" >> "$GITHUB_OUTPUT"
+          echo "service=$SERVICE" >> "$GITHUB_OUTPUT"
+
       - name: Validate deploy configuration
         run: |
-          test -n "$GCP_PROJECT_ID" || (echo "Missing deploy config: set GCP_PROJECT as a repository secret or variable" && exit 1)
-          test -n "$CLOUD_RUN_SERVICE" || (echo "Missing deploy config: set CLOUD_RUN_SERVICE as a repository secret or variable" && exit 1)
+          test -n "${{ steps.resolve.outputs.project_id }}" || (echo "Missing deploy config: set GCP_PROJECT as a repository secret/variable or ensure project_id exists in GCP_SA_KEY" && exit 1)
 
       - name: Authenticate to Google Cloud
         id: auth
@@ -98,12 +121,12 @@ jobs:
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ env.GCP_PROJECT_ID }}
+          project_id: ${{ steps.resolve.outputs.project_id }}
 
       - name: Log in to Artifact Registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.GCP_REGION }}-docker.pkg.dev
+          registry: ${{ steps.resolve.outputs.region }}-docker.pkg.dev
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
 
@@ -113,16 +136,16 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/recoveryos/recoveryos:${{ github.sha }}
+          tags: ${{ steps.resolve.outputs.region }}-docker.pkg.dev/${{ steps.resolve.outputs.project_id }}/recoveryos/recoveryos:${{ github.sha }}
 
       - name: Deploy to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v1
         with:
-          project_id: ${{ env.GCP_PROJECT_ID }}
-          service: ${{ env.CLOUD_RUN_SERVICE }}
-          image: ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/recoveryos/recoveryos:${{ github.sha }}
-          region: ${{ env.GCP_REGION }}
+          project_id: ${{ steps.resolve.outputs.project_id }}
+          service: ${{ steps.resolve.outputs.service }}
+          image: ${{ steps.resolve.outputs.region }}-docker.pkg.dev/${{ steps.resolve.outputs.project_id }}/recoveryos/recoveryos:${{ github.sha }}
+          region: ${{ steps.resolve.outputs.region }}
           env_vars: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             ALLOWED_ORIGINS=${{ secrets.ALLOWED_ORIGINS }}
