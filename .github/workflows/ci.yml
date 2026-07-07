@@ -133,6 +133,24 @@ jobs:
           push: true
           tags: ${{ steps.resolve.outputs.region }}-docker.pkg.dev/${{ steps.resolve.outputs.project_id }}/recoveryos/recoveryos:${{ github.sha }}
 
+      - name: Build Cloud Run env vars
+        id: runtime_env
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
+        run: |
+          {
+            echo "env_vars<<EOF"
+            echo "RECOVERYOS_BUILD_ID=${GITHUB_SHA}"
+            if [ -n "$DATABASE_URL" ]; then
+              echo "DATABASE_URL=$DATABASE_URL"
+            fi
+            if [ -n "$ALLOWED_ORIGINS" ]; then
+              echo "ALLOWED_ORIGINS=$ALLOWED_ORIGINS"
+            fi
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Deploy to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v1
@@ -141,10 +159,7 @@ jobs:
           service: ${{ steps.resolve.outputs.service }}
           image: ${{ steps.resolve.outputs.region }}-docker.pkg.dev/${{ steps.resolve.outputs.project_id }}/recoveryos/recoveryos:${{ github.sha }}
           region: ${{ steps.resolve.outputs.region }}
-          env_vars: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            ALLOWED_ORIGINS=${{ secrets.ALLOWED_ORIGINS }}
-            RECOVERYOS_BUILD_ID=${{ github.sha }}
+          env_vars: ${{ steps.runtime_env.outputs.env_vars }}
 
       - name: Verify deployed branding and build stamp
         run: |
