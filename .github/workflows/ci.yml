@@ -87,9 +87,9 @@ jobs:
           INPUT_SERVICE: ${{ secrets.CLOUD_RUN_SERVICE || vars.CLOUD_RUN_SERVICE }}
           GCP_SA_KEY_JSON: ${{ secrets.GCP_SA_KEY }}
         run: |
-          PROJECT_ID="$INPUT_PROJECT_ID"
-          REGION="$INPUT_REGION"
-          SERVICE="$INPUT_SERVICE"
+          PROJECT_ID="$(printf '%s' "$INPUT_PROJECT_ID" | tr -d '\r\n' | xargs)"
+          REGION="$(printf '%s' "$INPUT_REGION" | tr -d '\r\n' | xargs)"
+          SERVICE="$(printf '%s' "$INPUT_SERVICE" | tr -d '\r\n' | xargs)"
 
           if [ -z "$PROJECT_ID" ] && [ -n "$GCP_SA_KEY_JSON" ]; then
             PROJECT_ID="$(printf '%s' "$GCP_SA_KEY_JSON" | jq -r '.project_id // empty')"
@@ -99,14 +99,25 @@ jobs:
             REGION="us-central1"
           fi
 
+          IMAGE_REPO="${REGION}-docker.pkg.dev/${PROJECT_ID}/recoveryos/recoveryos"
+          IMAGE_URI="${IMAGE_REPO}:${GITHUB_SHA}"
+
           echo "project_id=$PROJECT_ID" >> "$GITHUB_OUTPUT"
           echo "region=$REGION" >> "$GITHUB_OUTPUT"
           echo "service=$SERVICE" >> "$GITHUB_OUTPUT"
+          echo "image_repo=$IMAGE_REPO" >> "$GITHUB_OUTPUT"
+          echo "image_uri=$IMAGE_URI" >> "$GITHUB_OUTPUT"
 
       - name: Validate deploy configuration
         run: |
           test -n "${{ steps.resolve.outputs.project_id }}" || (echo "Missing deploy config: set GCP_PROJECT as a repository secret/variable or ensure project_id exists in GCP_SA_KEY" && exit 1)
           test -n "${{ steps.resolve.outputs.service }}" || (echo "Missing deploy config: set CLOUD_RUN_SERVICE to the service name mapped to your website domain" && exit 1)
+          case "${{ steps.resolve.outputs.image_uri }}" in
+            /*|*"//"*|":")
+              echo "Invalid image URI generated: '${{ steps.resolve.outputs.image_uri }}'"
+              exit 1
+              ;;
+          esac
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -128,7 +139,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ steps.resolve.outputs.region }}-docker.pkg.dev/${{ steps.resolve.outputs.project_id }}/recoveryos/recoveryos:${{ github.sha }}
+          tags: ${{ steps.resolve.outputs.image_uri }}
 
       - name: Build Cloud Run env vars
         id: runtime_env
@@ -156,7 +167,7 @@ jobs:
         with:
           project_id: ${{ steps.resolve.outputs.project_id }}
           service: ${{ steps.resolve.outputs.service }}
-          image: ${{ steps.resolve.outputs.region }}-docker.pkg.dev/${{ steps.resolve.outputs.project_id }}/recoveryos/recoveryos:${{ github.sha }}
+          image: ${{ steps.resolve.outputs.image_uri }}
           region: ${{ steps.resolve.outputs.region }}
           env_vars: ${{ steps.runtime_env.outputs.env_vars }}
 
