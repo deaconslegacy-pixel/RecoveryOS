@@ -50,10 +50,14 @@ export default function App() {
     <div className="app-shell">
       <nav className="top-nav">
         <div className="top-nav-brand">
-          <div className="brand-mark">✦</div>
+          <div className="brand-mark" aria-hidden="true">
+            <span className="brand-flame" />
+            <span className="brand-wing left" />
+            <span className="brand-wing right" />
+          </div>
           <div className="brand-title">
             <strong>RecoveryOS</strong>
-            <span>Deacons Legacy</span>
+            <span>by Deacons Legacy</span>
           </div>
         </div>
         <div className="nav-actions">

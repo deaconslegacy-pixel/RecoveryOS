@@ -1,6 +1,6 @@
-# RecoveryOS
+# RecoveryOS by Deacons Legacy
 
-RecoveryOS is a privacy-first, recovery-oriented operating system concept for coordinating care across patients, counselors, families, facilities, and intelligent support systems.
+RecoveryOS by Deacons Legacy is a privacy-first, recovery-oriented operating system concept for coordinating care across patients, counselors, families, facilities, and intelligent support systems.
 
 ## Vision
 
@@ -43,6 +43,15 @@ RecoveryOS is designed to support recovery journeys with secure, role-aware tool
 ## Current Implementation Status
 
 This repository currently contains a FastAPI-based backend scaffold that exposes endpoints for the five app areas and supports the foundational workflows described above.
+
+## Branding Update (July 2026)
+
+The frontend now reflects the product identity as **RecoveryOS by Deacons Legacy** and includes a phoenix-inspired recovery theme.
+
+- Top-level app branding now displays RecoveryOS by Deacons Legacy.
+- The home experience includes updated copy centered on renewal and coordinated recovery.
+- A phoenix-inspired visual motif is applied across hero and navigation elements.
+- Dashboard headers across patient, counselor, family, and facility views now use the full brand byline.
 
 ## Security and Privacy Principles
 
@@ -153,7 +162,7 @@ This repository is an early-stage technical foundation. It is not a substitute f
 
 - Backend server: `app/main.py` (FastAPI). Runs on Gunicorn + Uvicorn worker in production.
 - Storage: `app/storage.py` now uses SQLAlchemy and reads `DATABASE_URL` for production; falls back to local SQLite at `data/recoveryos.db`.
-- Frontend: `frontend/` (Vite + React). Docker multi-stage build compiles frontend and copies the `dist` into the image at `/app/frontend_dist`.
+- Frontend: `frontend/` (Vite + React) with a phoenix-inspired RecoveryOS by Deacons Legacy visual theme. Docker multi-stage build compiles frontend and copies the `dist` into the image at `/app/frontend_dist`.
 - Docker: multi-stage build, non-root `app` user, `HEALTHCHECK` configured. See `Dockerfile`.
 - CI: `.github/workflows/ci.yml` runs tests, builds the frontend, and pushes the Docker image to GitHub Container Registry (`ghcr.io`).
 

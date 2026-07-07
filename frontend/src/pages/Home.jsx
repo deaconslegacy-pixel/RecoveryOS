@@ -11,9 +11,9 @@ export default function Home({ onNavigate }) {
       <div className="hero hero-split">
         <div className="hero-copy-block">
           <p className="eyebrow">RecoveryOS by Deacons Legacy</p>
-          <h1>Modern recovery coordination for patients, care teams, and families.</h1>
+          <h1>Rise stronger every day with coordinated recovery care.</h1>
           <p className="hero-copy">
-            Bring daily support, compliance-ready care workflows, and role-based collaboration into a single calm, secure operating system.
+            RecoveryOS by Deacons Legacy unifies daily support, clinical workflows, and family collaboration in one secure platform designed around renewal and progress.
           </p>
           <div className="button-row">
             <button onClick={() => onNavigate('patient')}>Explore patient experience</button>
@@ -23,7 +23,9 @@ export default function Home({ onNavigate }) {
         <div className="phoenix-card" aria-label="Phoenix rising as a recovery symbol">
           <div className="phoenix-glow" />
           <div className="phoenix-crest">
-            <span>✦</span>
+            <span className="phoenix-core" />
+            <span className="phoenix-wing left" />
+            <span className="phoenix-wing right" />
           </div>
         </div>
       </div>

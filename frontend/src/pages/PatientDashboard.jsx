@@ -24,7 +24,7 @@ export default function PatientDashboard() {
     <section className="page-stack">
       <div className="card wide-card">
         <div className="card-header">
-          <p className="eyebrow">RecoveryOS workspace</p>
+          <p className="eyebrow">RecoveryOS by Deacons Legacy</p>
           <h2>Patient dashboard</h2>
         </div>
         {dashboard ? (

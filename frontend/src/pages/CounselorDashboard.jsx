@@ -3,7 +3,7 @@ export default function CounselorDashboard() {
     <section className="page-stack">
       <div className="card wide-card">
         <div className="card-header">
-          <p className="eyebrow">RecoveryOS workspace</p>
+          <p className="eyebrow">RecoveryOS by Deacons Legacy</p>
           <h2>Counselor dashboard</h2>
         </div>
         <p>Caseload overview, alerts, planning notes, and compliance summaries will appear here.</p>
