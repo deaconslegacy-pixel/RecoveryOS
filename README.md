@@ -173,6 +173,15 @@ The frontend now uses this env var and will call `/auth/login` relative to the c
 
 The service is also ready for deployment to Render, Fly.io, Railway, Azure App Service, or similar platforms using the provided Procfile and Dockerfile.
 
+### Website update checklist (when the live site looks stale)
+
+1. Push to `main` (or run the `CI` workflow manually via `workflow_dispatch`).
+1. In GitHub Actions, wait for both jobs to pass: `build-test-and-push` and `deploy-to-cloud-run`.
+1. Open `/ui` on the live service and confirm the build stamp at the bottom includes the current commit short SHA.
+1. If content still appears stale, hard-refresh the browser and verify the URL includes cache-busting query values for redirects to `/app/`.
+
+The backend now sends `Cache-Control: no-store` headers on HTML responses and injects a build stamp (`RecoveryOS by Deacons Legacy | v<version> | <short-sha>`), so successful deploys are visible immediately.
+
 ## Notes
 
 This repository is an early-stage technical foundation. It is not a substitute for legal advice, compliance review, or a completed production-ready platform.

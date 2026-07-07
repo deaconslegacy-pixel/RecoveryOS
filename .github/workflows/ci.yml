@@ -5,6 +5,11 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: recoveryos-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -48,6 +53,7 @@ jobs:
           npm run build
 
       - name: Log in to GHCR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -55,6 +61,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -70,12 +77,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
       - name: Set up gcloud
-        uses: google-github-actions/setup-gcloud@v1
+        uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
 
       - name: Configure Docker for Artifact Registry
         run: |
@@ -92,6 +102,7 @@ jobs:
           tags: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/recoveryos/recoveryos:${{ github.sha }}
 
       - name: Deploy to Cloud Run
+        id: deploy
         uses: google-github-actions/deploy-cloudrun@v1
         with:
           project_id: ${{ secrets.GCP_PROJECT }}
@@ -101,3 +112,11 @@ jobs:
           env_vars: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             ALLOWED_ORIGINS=${{ secrets.ALLOWED_ORIGINS }}
+            RECOVERYOS_BUILD_ID=${{ github.sha }}
+
+      - name: Verify deployed branding and build stamp
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          test -n "${{ steps.deploy.outputs.url }}"
+          curl -fsSL -H 'Cache-Control: no-cache' "${{ steps.deploy.outputs.url }}/ui" | grep -q "RecoveryOS by Deacons Legacy"
+          curl -fsSL -H 'Cache-Control: no-cache' "${{ steps.deploy.outputs.url }}/ui" | grep -q "$SHORT_SHA"
