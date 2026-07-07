@@ -163,6 +163,12 @@ jobs:
           region: ${{ steps.resolve.outputs.region }}
           env_vars: ${{ steps.runtime_env.outputs.env_vars }}
 
+      - name: Route 100% traffic to latest revision
+        run: |
+          gcloud run services update-traffic "${{ steps.resolve.outputs.service }}" \
+            --region "${{ steps.resolve.outputs.region }}" \
+            --to-latest
+
       - name: Verify deployed branding and build stamp
         run: |
           SHORT_SHA="${GITHUB_SHA::7}"
