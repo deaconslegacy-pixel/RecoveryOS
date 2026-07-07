@@ -76,17 +76,17 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     env:
-      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-      GCP_REGION: ${{ secrets.GCP_REGION || 'us-central1' }}
-      CLOUD_RUN_SERVICE: ${{ secrets.CLOUD_RUN_SERVICE }}
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT || vars.GCP_PROJECT }}
+      GCP_REGION: ${{ secrets.GCP_REGION || vars.GCP_REGION || 'us-central1' }}
+      CLOUD_RUN_SERVICE: ${{ secrets.CLOUD_RUN_SERVICE || vars.CLOUD_RUN_SERVICE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Validate deploy configuration
         run: |
-          test -n "$GCP_PROJECT_ID" || (echo "Missing required secret: GCP_PROJECT" && exit 1)
-          test -n "$CLOUD_RUN_SERVICE" || (echo "Missing required secret: CLOUD_RUN_SERVICE" && exit 1)
+          test -n "$GCP_PROJECT_ID" || (echo "Missing deploy config: set GCP_PROJECT as a repository secret or variable" && exit 1)
+          test -n "$CLOUD_RUN_SERVICE" || (echo "Missing deploy config: set CLOUD_RUN_SERVICE as a repository secret or variable" && exit 1)
 
       - name: Authenticate to Google Cloud
         id: auth
